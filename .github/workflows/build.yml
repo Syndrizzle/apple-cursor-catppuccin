@@ -6,15 +6,8 @@ on:
       - "**.md"
       - LICENSE
       - .github/FUNDING.yml
-    branches: [main, dev]
     tags:
       - 'v*'
-  pull_request:
-    paths-ignore:
-      - "**.md"
-      - LICENSE
-      - .github/FUNDING.yml
-    branches: [main]
 
 jobs:
   build:
