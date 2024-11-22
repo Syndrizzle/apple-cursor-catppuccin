@@ -64,6 +64,8 @@ for key in "${!names[@]}"; do
   wait $PID
 done
 
+python3 fix_inf.py
+
 # Compressing Binaries
 mkdir -p bin
 cd themes || exit
@@ -74,12 +76,6 @@ for key in "${!names[@]}"; do
   wait $PID
 done
 
-# Compressing macOS.tar.xz
-cp ../LICENSE .
-tar -cJvf "../bin/macOS.tar.xz" --exclude="*-Windows" . &
-PID=$!
-wait $PID
-
 # Compressing macOS-*-Windows
 for key in "${!names[@]}"; do
   zip -rv "../bin/${key}-Windows.zip" "${key}-Regular-Windows" "${key}-Large-Windows" "${key}-Extra-Large-Windows" &
@@ -88,7 +84,3 @@ for key in "${!names[@]}"; do
 done
 
 cd ..
-
-# Copying License File for 'bitmaps'
-cp LICENSE bitmaps/
-zip -rv bin/bitmaps.zip bitmaps
