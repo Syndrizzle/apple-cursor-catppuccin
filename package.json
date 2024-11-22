@@ -6,6 +6,6 @@
     "clean": "rm -rf bin bitmaps themes",
     "render": "npx cbmp render.json",
     "build": "bash build.sh",
-    "generate": "npx cbmp render.json && bash build.sh"
+    "generate": "python generate_variants.py && npx cbmp render.json && bash build.sh"
   }
 }

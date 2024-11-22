@@ -1,0 +1,3 @@
+catppuccin>=2.0.0 
+clickgen>=2.1.3    
+pathlib>=1.0.1

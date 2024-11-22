@@ -1,4 +1,4 @@
-name: build
+name: Build and Release
 
 on:
   push:
@@ -7,6 +7,8 @@ on:
       - LICENSE
       - .github/FUNDING.yml
     branches: [main, dev]
+    tags:
+      - 'v*'
   pull_request:
     paths-ignore:
       - "**.md"
@@ -16,12 +18,7 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
-
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -34,14 +31,6 @@ jobs:
         run: |
           rm -rf node_modules yarn.lock
           yarn install --frozen-lockfile
-        continue-on-error: false
-
-      - name: Print cbmp version
-        run: npx cbmp --version
-
-      - name: Rendering Bitmaps
-        run: yarn render
-        continue-on-error: false
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -49,13 +38,45 @@ jobs:
           python-version: 3.11
 
       - name: Installing PyPi Dependencies
-        run: python -m pip install --upgrade pip clickgen
-        continue-on-error: false
-
-      - name: Print clickgen Version
         run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build Cursors
+        run: |
+          npx cbmp --version
+          yarn render
           clickgen --version
           ctgen --version
+          yarn build
 
-      - name: Build
-        run: yarn build
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: cursor-packages
+          path: bin/
+          retention-days: 1
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: cursor-packages
+          path: bin/
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            bin/*.tar.xz
+            bin/*.zip
+          body_path: CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

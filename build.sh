@@ -30,8 +30,14 @@ if ! type -p ctgen >/dev/null; then
 fi
 
 declare -A names
-names["macOS"]=$(with_version "macOS")
-names["macOS-White"]=$(with_version "White macOS")
+names["macOS-Catppuccin-Latte-Dark"]=$(with_version "Catppuccin Latte Dark")
+names["macOS-Catppuccin-Latte"]=$(with_version "Catppuccin Latte")
+names["macOS-Catppuccin-Frappe-Dark"]=$(with_version "Catppuccin Frappe Dark")
+names["macOS-Catppuccin-Frappe"]=$(with_version "Catppuccin Frappe")
+names["macOS-Catppuccin-Macchiato-Dark"]=$(with_version "Catppuccin Macchiato Dark")
+names["macOS-Catppuccin-Macchiato"]=$(with_version "Catppuccin Macchiato")
+names["macOS-Catppuccin-Mocha-Dark"]=$(with_version "Catppuccin Mocha Dark")
+names["macOS-Catppuccin-Mocha"]=$(with_version "Catppuccin Mocha")
 
 # Cleanup old builds
 rm -rf themes bin
